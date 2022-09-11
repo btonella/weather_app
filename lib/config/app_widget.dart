@@ -21,7 +21,7 @@ class AppWidget extends StatelessWidget {
       theme: ThemeData(
         textTheme: defaultTextTheme,
         primaryColor: appColors.mainColor(),
-        scaffoldBackgroundColor: appColors.white(),
+        scaffoldBackgroundColor: appColors.grey(),
         iconTheme: IconThemeData(color: appColors.black()),
         primaryIconTheme: IconThemeData(color: appColors.black()),
         visualDensity: VisualDensity.adaptivePlatformDensity,

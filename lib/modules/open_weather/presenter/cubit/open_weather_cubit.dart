@@ -54,7 +54,11 @@ class OpenWeatherCubit extends Cubit<OpenWeatherState> {
           failure = l;
           return;
         }, (r) {
-          r.name = map['name'];
+          if (map['name'] == 'Minha Localizaçao') {
+            r.isMyWeather = true;
+          } else {
+            r.name = map['name'];
+          }
           results.add(r);
           return;
         });
@@ -63,7 +67,7 @@ class OpenWeatherCubit extends Cubit<OpenWeatherState> {
           break;
         }
       }
-      if (results.length > 9) {
+      if (results.length == listPositions.length) {
         weathers = results;
         emit(OpenWeatherSuccessState(weathers: weathers!, weatherStatus: OpenWeatherStatus.getWeather));
       }

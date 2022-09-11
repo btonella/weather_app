@@ -16,4 +16,5 @@ class AppColors {
   background() => Color(0xFFFCFCFC);
   backgroundOpposite() => Colors.black;
   error() => Colors.red;
+  blue() => Colors.lightBlue;
 }

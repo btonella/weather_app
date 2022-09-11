@@ -3,6 +3,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:weather_app/modules/open_weather/infra/models/clouds.dart';
 import 'package:weather_app/modules/open_weather/infra/models/main_infos.dart';
+import 'package:weather_app/modules/open_weather/infra/models/rain.dart';
+import 'package:weather_app/modules/open_weather/infra/models/snow.dart';
 import 'package:weather_app/modules/open_weather/infra/models/sun_infos.dart';
 import 'package:weather_app/modules/open_weather/infra/models/weather_infos.dart';
 import 'package:weather_app/modules/open_weather/infra/models/wind.dart';
@@ -15,6 +17,9 @@ class Weather extends Equatable {
   final Wind? wind;
   final Clouds? clouds;
   final SunInfos? sunInfo;
+  final Rain? rain;
+  final Snow? snow;
+  bool isMyWeather;
 
   Weather({
     this.name,
@@ -24,6 +29,9 @@ class Weather extends Equatable {
     this.wind,
     this.clouds,
     this.sunInfo,
+    this.rain,
+    this.snow,
+    this.isMyWeather = false,
   });
 
   @override
@@ -38,6 +46,8 @@ class Weather extends Equatable {
       wind: map['wind'] != null ? Wind.fromMap(map['wind']) : null,
       clouds: map['clouds'] != null ? Clouds.fromMap(map['clouds']) : null,
       sunInfo: map['sys'] != null ? SunInfos.fromMap(map['sys']) : null,
+      rain: map['rain'] != null ? Rain.fromMap(map['rain']) : null,
+      snow: map['snow'] != null ? Snow.fromMap(map['snow']) : null,
     );
   }
 }
