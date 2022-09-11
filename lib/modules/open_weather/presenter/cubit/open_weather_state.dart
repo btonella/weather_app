@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:weather_app/modules/open_weather/domain/errors.dart';
-import 'package:weather_app/modules/open_weather/infra/models/weathers.dart';
+import 'package:weather_app/modules/open_weather/infra/models/weather.dart';
 
 enum OpenWeatherStatus { getWeather }
 
@@ -17,7 +17,7 @@ class OpenWeatherLoadingState extends OpenWeatherState {
 }
 
 class OpenWeatherSuccessState extends OpenWeatherState {
-  final Weathers weathers;
+  final List<Weather> weathers;
   final OpenWeatherStatus weatherStatus;
   OpenWeatherSuccessState({required this.weathers, required this.weatherStatus});
 

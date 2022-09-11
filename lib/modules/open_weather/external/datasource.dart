@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:weather_app/core/api.dart';
 import 'package:weather_app/modules/open_weather/domain/errors.dart';
-import 'package:weather_app/modules/open_weather/infra/models/weathers.dart';
+import 'package:weather_app/modules/open_weather/infra/models/weather.dart';
 
 OpenWeatherFailure getFailureError(Response? response) {
   if (response == null) return OpenWeatherUnkownError();
@@ -25,16 +25,17 @@ OpenWeatherFailure getFailureError(Response? response) {
 
 class OpenWeatherDatasource {
   final Api _api = Modular.get<Api>();
-  final String _defaultUrl = '';
+  final String _defaultUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
-  Future<Either<OpenWeatherFailure, Weathers>> getWeather() async {
+  Future<Either<OpenWeatherFailure, Weather>> getWeather(String lat, String lon) async {
     try {
-      Response? response = await _api.getApi('$_defaultUrl/');
+      String url = '$_defaultUrl?lat=$lat&lon=$lon${_api.defaultExtraConditions}';
+      Response? response = await _api.getApi(url);
       if (response == null || response.statusCode != 200 || response.data == null || response.data is! Map) {
         OpenWeatherFailure failure = getFailureError(response);
         return left(failure);
       } else {
-        Weathers weathers = Weathers.fromMap(response.data);
+        Weather weathers = Weather.fromMap(response.data);
         return right(weathers);
       }
     } catch (e) {

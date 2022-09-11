@@ -19,6 +19,8 @@ enum RequestMethod {
 }
 
 class Api {
+  final String defaultExtraConditions = '&lang=pt&units=metric&appid=470a7084354066b4f217c2948c261101';
+
   Api();
 
   Future<dynamic> getApi(String url) async {

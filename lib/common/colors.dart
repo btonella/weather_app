@@ -9,7 +9,7 @@ AppColors getAppColors() {
 class AppColors {
   mainColor() => Color(0xFFFEC92D);
   secondColor() => Color(0xff99731F);
-  grey() => Color(0xFF3F3F3F);
+  grey() => Color(0xFFF6F6F6);
   darkGrey() => Color(0xFF303030);
   white() => Colors.white;
   black() => Colors.black;

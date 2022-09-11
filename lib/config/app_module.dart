@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:weather_app/config/app_flavor.dart';
+import 'package:weather_app/config/app_geolocator.dart';
 import 'package:weather_app/config/app_preferences.dart';
 import 'package:weather_app/core/api.dart';
 import 'package:dio/dio.dart';
@@ -24,11 +25,12 @@ class AppModule extends Module {
         Bind((i) => AppPreferences()),
         Bind((i) => AppFlavor()),
         Bind((i) => Api()),
+        Bind((i) => AppGeolocator()),
       ];
 
   @override
   List<ModularRoute> get routes => [
         ChildRoute('/', child: (context, args) => HomePage()),
-        ChildRoute('/', child: (context, args) => WeatherDetailsPage()),
+        ChildRoute('/details', child: (context, args) => WeatherDetailsPage(args.data)),
       ];
 }
