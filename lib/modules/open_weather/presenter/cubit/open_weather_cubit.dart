@@ -13,6 +13,7 @@ class OpenWeatherCubit extends Cubit<OpenWeatherState> {
   final OpenWeatherUsecase _usecase = OpenWeatherUsecase();
 
   List<Weather>? weathers;
+  Weather? cityWeather;
 
   OpenWeatherCubit(OpenWeatherState initialState) : super(initialState);
 
@@ -23,6 +24,10 @@ class OpenWeatherCubit extends Cubit<OpenWeatherState> {
   void cleanState() {
     emit(OpenWeatherInitialState());
     weathers = null;
+  }
+
+  void emitSuccess(OpenWeatherStatus weatherStatus) {
+    emit(OpenWeatherSuccessState(weathers: weathers, cityWeather: cityWeather, weatherStatus: weatherStatus));
   }
 
   Future<Map<String, String>> getMyLocation() async {
@@ -69,9 +74,27 @@ class OpenWeatherCubit extends Cubit<OpenWeatherState> {
       }
       if (results.length == listPositions.length) {
         weathers = results;
-        emit(OpenWeatherSuccessState(weathers: weathers!, weatherStatus: OpenWeatherStatus.getWeather));
+        emitSuccess(OpenWeatherStatus.getWeather);
       }
       return;
+    } catch (e) {
+      emit(OpenWeatherErrorState(OpenWeatherUnkownError(message: e.toString())));
+    }
+  }
+
+  Future<void> getCityWeather(String name) async {
+    try {
+      cityWeather = null;
+      emit(OpenWeatherLoadingState());
+      final result = await _usecase.getCityWeather(name);
+      result.fold((l) {
+        emit(OpenWeatherErrorState(l));
+        return;
+      }, (r) async {
+        cityWeather = r;
+        emitSuccess(OpenWeatherStatus.getCityWeather);
+        return;
+      });
     } catch (e) {
       emit(OpenWeatherErrorState(OpenWeatherUnkownError(message: e.toString())));
     }

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:weather_app/common/colors.dart';
+import 'package:weather_app/common/modals.dart';
+import 'package:weather_app/common/text_input.dart';
 import 'package:weather_app/common/theme.dart';
 import 'package:weather_app/config/app_geolocator.dart';
 import 'package:weather_app/modules/open_weather/infra/models/weather.dart';
@@ -22,6 +24,8 @@ class _HomePageState extends State<HomePage> {
   AppGeolocator appGeolocator = Modular.get<AppGeolocator>();
   AppColors appColors = getAppColors();
   bool hasGeolocationPermission = false;
+  TextEditingController searchController = TextEditingController();
+  FocusNode searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -87,29 +91,60 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Weather App'), backgroundColor: appColors.mainColor()),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: BlocConsumer(
-          bloc: openWeatherCubit,
-          listener: (context, state) {},
-          builder: (context, state) {
-            if (state is OpenWeatherLoadingState) return Center(child: CircularProgressIndicator(color: appColors.mainColor()));
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Weather App'), backgroundColor: appColors.mainColor()),
+        body: Container(
+          padding: const EdgeInsets.all(10),
+          child: BlocConsumer(
+            bloc: openWeatherCubit,
+            listener: (context, state) {
+              if (state is OpenWeatherErrorState) showErrorModal(context, message: state.failure.message);
+            },
+            builder: (context, state) {
+              if (state is OpenWeatherLoadingState) return Center(child: CircularProgressIndicator(color: appColors.mainColor()));
 
-            return SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: RefreshIndicator(
-                onRefresh: () => openWeatherCubit.getAllWeathers(),
-                child: ListView(
-                  // shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: state is OpenWeatherSuccessState ? buildList(state.weathers) : [],
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: RefreshIndicator(
+                  onRefresh: () => openWeatherCubit.getAllWeathers(),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        defaultTextField(
+                          context: context,
+                          controller: searchController,
+                          focusNode: searchFocusNode,
+                          hint: 'Pesquise uma cidade',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              openWeatherCubit.getCityWeather(searchController.text);
+                              searchFocusNode.unfocus();
+                              searchController.clear();
+                            },
+                            icon: Icon(
+                              Icons.search,
+                              color: appColors.mainColor(),
+                            ),
+                          ),
+                        ),
+                        openWeatherCubit.cityWeather != null ? buildWeatherCard(openWeatherCubit.cityWeather!) : Container(),
+                        ...(openWeatherCubit.weathers != null ? buildList(openWeatherCubit.weathers!) : []),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

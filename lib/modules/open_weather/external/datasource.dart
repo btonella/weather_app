@@ -42,4 +42,21 @@ class OpenWeatherDatasource {
       return left(OpenWeatherUnkownError(message: e.toString()));
     }
   }
+
+  Future<Either<OpenWeatherFailure, Weather>> getCityWeather(String name) async {
+    try {
+      String url = '$_defaultUrl?q=$name${_api.defaultExtraConditions}';
+      Response? response = await _api.getApi(url);
+      if (response == null || response.statusCode != 200 || response.data == null || response.data is! Map) {
+        OpenWeatherFailure failure = getFailureError(response);
+        if (failure is OpenWeatherRequestError) failure.message = 'Não foi possível encontrar a cidade digitada.';
+        return left(failure);
+      } else {
+        Weather weathers = Weather.fromMap(response.data);
+        return right(weathers);
+      }
+    } catch (e) {
+      return left(OpenWeatherUnkownError(message: e.toString()));
+    }
+  }
 }

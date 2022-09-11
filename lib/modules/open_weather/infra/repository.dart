@@ -19,4 +19,18 @@ class OpenWeatherRepository implements OpenWeatherDatasource {
       return left(OpenWeatherUnkownError(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<OpenWeatherFailure, Weather>> getCityWeather(String name) async {
+    try {
+      final result = await _datasource.getCityWeather(name);
+      return result.fold((l) {
+        return left(l);
+      }, (r) {
+        return right(r);
+      });
+    } catch (e) {
+      return left(OpenWeatherUnkownError(message: e.toString()));
+    }
+  }
 }

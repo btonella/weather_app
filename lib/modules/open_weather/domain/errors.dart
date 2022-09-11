@@ -5,40 +5,40 @@ abstract class OpenWeatherFailure implements Exception {
 
 class OpenWeatherRequestError implements OpenWeatherFailure {
   @override
-  final String? message;
+  String? message;
   @override
-  final dynamic data;
+  dynamic data;
   OpenWeatherRequestError({this.message, this.data});
 }
 
 class OpenWeatherUnauthorizedError implements OpenWeatherFailure {
   @override
-  final String? message;
+  String? message;
   @override
-  final dynamic data;
+  dynamic data;
   OpenWeatherUnauthorizedError({this.message, this.data});
 }
 
 class OpenWeatherForbiddenError implements OpenWeatherFailure {
   @override
-  final String? message;
+  String? message;
   @override
-  final dynamic data;
+  dynamic data;
   OpenWeatherForbiddenError({this.message, this.data});
 }
 
 class OpenWeatherInternalError implements OpenWeatherFailure {
   @override
-  final String? message;
+  String? message;
   @override
-  final dynamic data;
+  dynamic data;
   OpenWeatherInternalError({this.message, this.data});
 }
 
 class OpenWeatherUnkownError implements OpenWeatherFailure {
   @override
-  final String? message;
+  String? message;
   @override
-  final dynamic data;
+  dynamic data;
   OpenWeatherUnkownError({this.message, this.data});
 }
